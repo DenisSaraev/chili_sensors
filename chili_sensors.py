@@ -37,13 +37,13 @@ def SoilMoisture_sensor (PIN_AP_SOIL,PIN_WP_MOSF):
         #Analog pin for soil moisture sensor 
         ap = troykahat.analog_io()
         ap.pinMode(PIN_AP_SOIL, ap.INPUT)
-        
+
         try:
             #Changing mosfet statement
             wp.digitalWrite(PIN_WP_MOSF, True) #set True for enable
             logger.info(f'Digital pin {PIN_WP_MOSF} enabled, mosfet opened')
             sleep(1.0)
-            
+
             #List for collecting sensor's indications
             result_list=[]
             #Reading 10 indications
@@ -58,12 +58,12 @@ def SoilMoisture_sensor (PIN_AP_SOIL,PIN_WP_MOSF):
                 logger.info(f'Analog pin {PIN_AP_SOIL} with SoilMoisture sensor got value: {SoilMoisture_human_readable}')
                 result_list.append(SoilMoisture_human_readable)
                 sleep(0.2)
-        
+
         finally:
             #Changing mosfet statement
             wp.digitalWrite(PIN_WP_MOSF, False)
             logger.info(f'Digital pin {PIN_WP_MOSF} disabled, mosfet closed')
-        
+
         #Find the average value
         average_SoilMoisture=(statistics.mean (result_list))
         logger.info(f'Average value for this measuring session is: {average_SoilMoisture}')
@@ -89,7 +89,7 @@ def Themperature_sensor(PIN_AP_TEMP):
         #Analog pin for themperature sensor 
         ap = troykahat.analog_io()
         ap.pinMode(PIN_AP_TEMP, ap.INPUT)
-        
+
         #Reading sensor
         TempValue=ap.analogRead(PIN_AP_TEMP)
         logger.debug(f'Analog pin {PIN_AP_TEMP} with themperature sensor read information: {TempValue}')
@@ -108,18 +108,18 @@ def Themperature_sensor(PIN_AP_TEMP):
         with open(path,'a') as file:
             file.write (f'{PIN_AP_TEMP}|{current_time_short}|{TempValue_C}\n')
             logger.debug(f'Saved data to {path}')
-        
+
     except Exception as e:
         logging.exception('Exception occured')
 
-#plant_list=(1,2,3,4,5,6)
-plant_list=(2,3,4,5,6)
+plant_list=(1,2,3,4,5,6)
+#plant_list=(2,3,4,5,6)
 
 def main():
     for each_plant in plant_list:
         SoilMoisture_sensor(each_plant,0)
     Themperature_sensor(0)
-    
+
 if __name__=='__main__':
     main()
 
