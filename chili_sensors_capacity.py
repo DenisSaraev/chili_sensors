@@ -9,6 +9,13 @@ import statistics
 import logging
 from time import sleep
 
+def mapp(n, current_low, current_high, new_low, new_high):
+    '''
+    The function proportionally transfers the value (n) from the current range of values 
+    to a new range.
+    '''
+    return (n-current_low)*(new_high-new_low)/(current_high-current_low) + new_low
+
 #Logger configuration
 logger=logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -54,7 +61,8 @@ def SoilMoisture_sensor (PIN_AP_SOIL,PIN_WP_MOSF):
                 SoilMoisture=ap.analogRead(PIN_AP_SOIL)
                 logger.debug(f'Analog pin {PIN_AP_SOIL} with SoilMoisture sensor read information: {SoilMoisture}')
                 #Changing view of result and append final list
-                SoilMoisture_human_readable = SoilMoisture*100
+                SoilMoisture_human_readable = SoilMoisture * 100
+                SoilMoisture_human_readable = mapp(SoilMoisture_human_readable,31,50,100,0)
                 logger.info(f'Analog pin {PIN_AP_SOIL} with SoilMoisture sensor got value: {SoilMoisture_human_readable}')
                 result_list.append(SoilMoisture_human_readable)
                 sleep(0.2)
@@ -113,7 +121,6 @@ def Themperature_sensor(PIN_AP_TEMP):
         logging.exception('Exception occured')
 
 plant_list=(1,2,3,4,5,6)
-#plant_list=(1,6)
 
 def main():
     for each_plant in plant_list:
@@ -124,3 +131,4 @@ if __name__=='__main__':
     main()
 
 logger.info('Script finished')
+
